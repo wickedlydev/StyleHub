@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import InputForm from "../input-form/inputform.component";
 import './signin.component.scss'
 import Button from "../button/button.component";
-import { SignInWithGoogleAuth , signInUserWithEmailAndPasswordFunc } from "../../utils/firebase.utils";
+import { SignInWithGoogleAuth , signInUserWithEmailAndPasswordFunc } from "../../utils/firebase.utils.js";
 import { UserContext } from "../../contexts/externalcontexts";
 
 const formFields = {
