@@ -1,7 +1,11 @@
 import { createContext, useState, useEffect } from "react";
-// import SHOP_DATA from '../shop-data.js';
-// import { createCollection } from "../utils/firebase.utils.js";
+import SHOP_DATA from "../shop-data.js";
 import { getCollectionDocs } from "../utils/firebase.utils.js";
+
+const staticCategories = SHOP_DATA.reduce((acc, category) => {
+    acc[category.title.toLowerCase()] = category.items;
+    return acc;
+}, {});
 export const CategoriesContext = createContext({
     categories: {},
 });
@@ -13,13 +17,30 @@ export const CategoriesProvider = ({children}) => {
     
     
     useEffect(() => {
+        let mounted = true;
         const fetchData = async () => {
-            const getCategories = await getCollectionDocs();
-            console.log(getCategories);
-            setcategories(getCategories)
+            try {
+                const getCategories = await getCollectionDocs();
+                if (!mounted) {
+                    return;
+                }
+                if (getCategories && Object.keys(getCategories).length) {
+                    setcategories(getCategories);
+                } else {
+                    setcategories(staticCategories);
+                }
+            } catch (error) {
+                console.error("Failed to fetch categories, falling back to static data", error);
+                if (mounted) {
+                    setcategories(staticCategories);
+                }
+            }
         }
 
         fetchData();
+        return () => {
+            mounted = false;
+        };
     }, [])
     return (
         <CategoriesContext.Provider value={value}>{children}</CategoriesContext.Provider>
