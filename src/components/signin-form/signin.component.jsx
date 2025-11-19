@@ -1,9 +1,10 @@
-import { useState } from "react";
+import { useContext, useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import InputForm from "../input-form/inputform.component";
 import './signin.component.scss'
 import Button from "../button/button.component";
 import { SignInWithGoogleAuth , signInUserWithEmailAndPasswordFunc } from "../../utils/firebase.utils";
-// import { UserContext } from "../../contexts/externalcontexts";
+import { UserContext } from "../../contexts/externalcontexts";
 
 const formFields = {
     email: '',
@@ -14,7 +15,14 @@ const SignInForm = () => {
     // In this form we need to verify the email and password entered by user
 
     const [formField, setformField] = useState(formFields);
-    // const {setuserStorage} = useContext(UserContext);
+    const { userStorage } = useContext(UserContext);
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        if (userStorage) {
+            navigate('/', { replace: true });
+        }
+    }, [userStorage, navigate]);
 
     const onChangeHandler = (event) => {
         // The event will give name, value, etc
@@ -30,7 +38,7 @@ const SignInForm = () => {
 
         try {
             await signInUserWithEmailAndPasswordFunc(formField.email, formField.password);
-            // setuserStorage(user);
+            setformField(formFields);
         }catch (e){
             console.log(e);
             if(e.code === 'auth/invalid-login-credentials'){
@@ -41,9 +49,6 @@ const SignInForm = () => {
 
     const logUser = async () => {
         await SignInWithGoogleAuth();
-        // setuserStorage(user);
-        // const userDocRefOb = await createUserDocument(res.user);
-        // console.log(userDocRefOb);
     }
 
     return (

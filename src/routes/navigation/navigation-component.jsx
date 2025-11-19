@@ -1,6 +1,6 @@
 import { Link, Outlet } from "react-router-dom";
 import { Fragment, useContext } from "react";
-import { ReactComponent as Crown } from "../../assets/crown.svg";
+import Crown from "../../assets/crown.svg?react";
 import { UserContext } from "../../contexts/externalcontexts";
 import { signOutUser } from "../../utils/firebase.utils";
 import CartIcon from "../../components/cart-icon/cart-icon.component";
